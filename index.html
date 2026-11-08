@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Linkcah">
 <meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#121418" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -18,6 +19,7 @@
 /* Aturan gaya: tanpa gradient, tanpa garis tipis, tanpa bayangan di elemen diam.
    Permukaan dibedakan lewat selisih warna latar. Bayangan hanya untuk yang melayang (dialog, toast, tombol + di HP). */
 :root{
+  color-scheme:light;
   --bg:#f4f5f7; --panel:#e9ebef; --panel-2:#dfe2e8; --float:#ffffff;
   --text:#14171c; --muted:#5b6270;
   --accent:#1d5bd8; --accent-soft:#dce7fb; --on-accent:#ffffff; --star:#d99a00; --danger:#c8323e;
@@ -28,6 +30,7 @@
   --fs-s:0.786rem; --fs-0:1rem; --fs-1:1.272rem; --fs-2:1.618rem; --fs-3:2.618rem;
 }
 :root[data-theme="dark"]{
+  color-scheme:dark;
   --bg:#121418; --panel:#1b1e24; --panel-2:#252932; --float:#1f232a;
   --text:#eceef2; --muted:#a2a8b4;
   --accent:#6b9bff; --accent-soft:#1e2a44; --on-accent:#0b1220; --star:#ffc53d; --danger:#ff6b74;
@@ -35,6 +38,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
+    color-scheme:dark;
     --bg:#121418; --panel:#1b1e24; --panel-2:#252932; --float:#1f232a;
     --text:#eceef2; --muted:#a2a8b4;
     --accent:#6b9bff; --accent-soft:#1e2a44; --on-accent:#0b1220; --star:#ffc53d; --danger:#ff6b74;
@@ -43,6 +47,8 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
+/* Latar juga di html: area di luar body (bar bawah HP, overscroll) ikut warna tema, bukan putih bawaan browser. */
+html{background:var(--bg)}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue","Inter",system-ui,"Segoe UI",Roboto,sans-serif;font-size:var(--fs-0);line-height:1.5;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit}
 a{color:inherit;text-decoration:none}
@@ -279,6 +285,16 @@ dialog::backdrop{background:rgba(10,12,16,.5)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<script>
+/* Terapkan tema pilihan sebelum halaman pertama kali tampil, supaya tidak sempat terang lalu berubah gelap. */
+try{
+  const t = JSON.parse(localStorage.getItem("lh_theme"));
+  if (t === "dark" || t === "light"){
+    document.documentElement.setAttribute("data-theme", t);
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute("content", t === "dark" ? "#121418" : "#f4f5f7"));
+  }
+}catch(e){}
+</script>
 </head>
 <body>
 <div class="app">
