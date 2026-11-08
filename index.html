@@ -1291,7 +1291,12 @@ function applyTheme(){
   btn.title = btn.getAttribute("aria-label");
   document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute("content", dark ? "#121418" : "#f4f5f7"));
 }
-F("themeBtn").onclick = () => { store.set("lh_theme", effectiveTheme() === "dark" ? "light" : "dark"); applyTheme(); };
+// Kalau pilihan sama dengan tema sistem, kembali ke "auto": bar navigasi bawah Android ikut tema sistem, jadi keduanya tetap cocok.
+F("themeBtn").onclick = () => {
+  const next = effectiveTheme() === "dark" ? "light" : "dark";
+  store.set("lh_theme", next === (darkMQ.matches ? "dark" : "light") ? "auto" : next);
+  applyTheme();
+};
 darkMQ.addEventListener?.("change", applyTheme);
 let toastTimer;
 function toast(msg){
